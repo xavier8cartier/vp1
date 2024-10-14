@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kylastuste logid</title>
+  </head>
+  <body>
+    <img
+      src="banner/vp_banner_2024.png"
+      alt="Veebiprogrammeerimise 2024 aasta kursuse banner"
+    />
+    <h1>Kylastuste logid</h1>
+    <ul>
+      <% listData.forEach(function(item) { %>
+      <li><%= item %></li>
+      <% }); %>
+    </ul>
+    <hr />
+    <ul>
+      <li><a href="/">Avaleht</a></li>
+      <li><a href="/timenow">Ajainfo</a></li>
+      <li><a href="/vanasonad">Vanasonad</a></li>
+      <li><a href="/regvisit">Registreeri oma kylastus</a></li>
+    </ul>
+  </body>
+</html>

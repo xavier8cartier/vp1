@@ -17,12 +17,18 @@
     </p>
     <hr />
     <ul>
-      <li><a href="/timenow">Ajainfo</a></li>
-      <li><a href="/vanasonad">Vanasonad</a></li>
-      <li><a href="/regvisit">Registreeri oma kylastus</a></li>
-      <li><a href="/regvisitdb">Registreeri oma kylastus (txt pohine)</a></li>
-      <li><a href="/visitlog">Kylastuste logid</a></li>
-      <li><a href="/eestifilm">Eesti Film</a></li>
+      <li><a href="/">Avaleht</a></li>
+      <li><a href="/eestifilm"> Eesti Filmi avaleht</a></li>
+    </ul>
+    <hr />
+    <h2>Eesti Filmitegelased</h2>
+    <ul>
+      <% persons.forEach(function(item) { %>
+      <li>
+        <%= item.first_name %> <%= item.last_name %>, syndinud <%=
+        item.birth_date %>
+      </li>
+      <% }); %>
     </ul>
   </body>
 </html>

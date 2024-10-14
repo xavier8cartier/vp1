@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ksaveri petrov</title>
+  </head>
+  <body>
+    <img
+      src="banner/vp_banner_2024.png"
+      alt="Veebiprogrammeerimise 2024 aasta kursuse banner"
+    />
+    <h1>Ksaveri Petrov</h1>
+    <p>
+      See leht on loodud oppetoo raames
+      <a href="https://www.tlu.ee" target="_blank"> Tallinna Ulikoolis</a> ja ei
+      sisalda tosiseltvoetavat sisu.
+    </p>
+    <hr />
+    <ul>
+      <li><a href="/">Avaleht</a></li>
+    </ul>
+    <hr />
+    <h2>Pane oma nimi andmebaasi kirja</h2>
+    <form method="POST">
+      <label for="firstNameInput">Eesnimi: </label>
+      <input
+        type="text"
+        id="firstNameInput"
+        name="firstNameInput"
+        placeholder="Eesnimi ..."
+        value="<%= firstName %>"
+      />
+      <br />
+      <label for="lasttNameInput">Perekonnanimi: </label>
+      <input
+        type="text"
+        id="lastNameInput"
+        name="lastNameInput"
+        placeholder="Perekonnanimi ..."
+        value="<%= lastName %>"
+      />
+      <br />
+      <input type="submit" id="regSubmit" name="regSubmit" value="Salvesta" />
+    </form>
+    <p><%= notice %></p>
+  </body>
+</html>
