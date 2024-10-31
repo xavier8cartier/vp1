@@ -37,6 +37,18 @@ const dateEt = function () {
   let dateNowEt = dateNow + ". " + monthNamesEt[monthNow] + " " + yearNow;
   return dateNowEt;
 };
+
+const givenDateFormatted = function (gDate) {
+  let specDate = new Date(gDate);
+  return (
+    specDate.getDate() +
+    " " +
+    monthNamesEt[specDate.getMonth()] +
+    " " +
+    specDate.getFullYear()
+  );
+};
+
 const weekDayET = function () {
   let timeNow = new Date();
   let dayNow = timeNow.getDay();
@@ -66,4 +78,7 @@ module.exports = {
   dateEt: dateEt,
   weekDayET: weekDayET,
   timeEt: timeFormattedET,
+  givenDateFormatted: givenDateFormatted,
 };
+
+// let specDate = new Date("12-27-1939");

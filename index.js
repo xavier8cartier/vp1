@@ -6,10 +6,14 @@ const dbInfo = require("../../vp2024config");
 const mysql = require("mysql2");
 //paringu lahtiharutamiseks POST paringute puhul
 const bodyparser = require("body-parser");
+//failide uleslaadimine
+const multer = require("multer");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
+//seadistame multeri et folotd lahevad kindla katoloogi
+const upload = multer({ dest: "./public/gallery/orig/" });
 
 //loon andmedbaasi yhenduse
 const conn = mysql.createConnection({
@@ -20,8 +24,23 @@ const conn = mysql.createConnection({
 });
 
 app.get("/", (req, res) => {
-  //res.send("express tootab");
-  res.render("index.ejs");
+  const semStartDate = new Date("2024-09-02");
+  const today = new Date();
+  const timeDifference = today - semStartDate;
+  const dateDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+  const sqlReq =
+    "SELECT news_title, news_text, news_date FROM news ORDER BY news_date DESC LIMIT 1";
+  conn.query(sqlReq, (err, sqlres) => {
+    if (err) {
+      throw err;
+    } else {
+      const latestNews = sqlres[0] || null;
+      res.render("index.ejs", {
+        dateDifference: dateDifference,
+        latestNews: latestNews,
+      });
+    }
+  });
 });
 
 app.get("/timenow", (req, res) => {
@@ -148,10 +167,141 @@ app.get("/eestifilm/tegelased", (req, res) => {
       throw err;
     } else {
       console.log(sqlres);
-      res.render("tegelased", { persons: sqlres });
+      let persons = [];
+      for (let i = 0; i < sqlres.length; i++) {
+        persons.push({
+          first_name: sqlres[i].first_name,
+          last_name: sqlres[i].last_name,
+          birth_date: dtEt.givenDateFormatted(sqlres[i].birth_date),
+        });
+      }
+      res.render("tegelased", { persons: persons });
     }
   });
-  //res.render("tegelased");
+});
+//res.render("tegelased");
+//---------------------------------------------------------------------------------------------
+app.get("/visitlogdb", (req, res) => {
+  let sqlReq = "SELECT first_name, last_name, visit_time FROM visitlog";
+  conn.query(sqlReq, (err, sqlres) => {
+    if (err) {
+      throw err;
+    } else {
+      res.render("visitlogdb", { visitlogs: sqlres });
+    }
+  });
 });
 
-app.listen(5118);
+app.post("/", (req, res) => {
+  if (req.body.personSubmit) {
+    let sqlReq = "INSERT INTO person (first_name, last_name) VALUES (?, ?)";
+    conn.query(sqlReq, [req.body.first_name, req.body.last_name], (err) => {
+      if (err) {
+        throw err;
+      } else {
+        res.redirect("/eestifilm/tegelased");
+      }
+    });
+  } else if (req.body.filmSubmit) {
+  } else if (req.body.roleSubmit) {
+  }
+});
+//-------------------------------------------------------------------------------------------------------------------
+app.post("/eestifilm", (req, res) => {
+  //<-------------------------/eestifilm
+  if (req.body.personSubmit) {
+    const sqlReq =
+      "INSERT INTO film_person (first_name, last_name) VALUES (?, ?)";
+    conn.query(sqlReq, [req.body.first_name, req.body.last_name], (err) => {
+      if (err) {
+        throw err;
+      } else {
+        res.redirect("/eestifilm");
+      }
+    });
+  } else if (req.body.filmSubmit) {
+    const sqlReq = "INSERT INTO films (film_title) VALUES (?)";
+    conn.query(sqlReq, [req.body.film_name], (err) => {
+      if (err) {
+        throw err;
+      } else {
+        res.redirect("/eestifilm");
+      }
+    });
+  } else if (req.body.roleSubmit) {
+    const sqlReq = "INSERT INTO roles (role_name) VALUES (?)";
+    conn.query(sqlReq, [req.body.role_name], (err) => {
+      if (err) {
+        throw err;
+      } else {
+        res.redirect("/eestifilm");
+      }
+    });
+  }
+});
+
+app.get("/addnews", (req, res) => {
+  const today = new Date();
+  let expDate = today.setDate(today.getDate() + 10);
+  expDate = new Date(expDate).toISOString();
+  res.render("addnews", { expDate: expDate });
+});
+
+app.post("/addnews", (req, res) => {
+  const { titleInput, newsInput, expireInput } = req.body;
+
+  if (!titleInput || !newsInput || !expireInput) {
+    return res.render("addnews", {
+      error: "Kõik lahtrid peavad olemad täidetud!",
+    });
+  }
+
+  if (titleInput.length < 3) {
+    return res.render("addnews", {
+      error: "Pealkiri peab sisaldama vähemalt 3 sümboli!",
+    });
+  }
+
+  if (newsInput.length < 10) {
+    return res.render("addnews", {
+      error: "Uudise sisu peab sisaldama vähemalt 10 sümboli",
+    });
+  }
+
+  const sqlReq =
+    "INSERT INTO news (news_title, news_text, news_date, expire_date, user_id) VALUES (?, ?, NOW(), ?, ?)";
+
+  conn.query(sqlReq, [titleInput, newsInput, expireInput, 1], (err) => {
+    if (err) {
+      throw err;
+    } else {
+      res.redirect("/news");
+    }
+  });
+});
+//res.render("/addnews");
+
+app.get("/news", (req, res) => {
+  let sqlReq =
+    "SELECT news_title, news_text, news_date FROM news WHERE expire_date >= NOW() ORDER BY news_date DESC";
+  conn.query(sqlReq, (err, sqlres) => {
+    if (err) {
+      throw err;
+    } else {
+      const latestNews = sqlres[0];
+      res.render("news.ejs", { newsList: sqlres, latestNews: latestNews });
+    }
+  });
+});
+
+app.get("/photoupload", (req, res) => {
+  res.render("photoupload");
+});
+
+app.post("/photoupload", upload.single("photoInput"), (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
+  res.render("photoupload");
+});
+
+app.listen(5117);

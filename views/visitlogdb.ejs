@@ -10,11 +10,6 @@
       alt="Veebiprogrammeerimise 2024 aasta kursuse banner"
     />
     <h1>Kylastuste logid</h1>
-    <ul>
-      <% listData.forEach(function(item) { %>
-      <li><%= item %></li>
-      <% }); %>
-    </ul>
     <hr />
     <ul>
       <li><a href="/">Avaleht</a></li>
@@ -22,5 +17,15 @@
       <li><a href="/vanasonad">Vanasonad</a></li>
       <li><a href="/regvisit">Registreeri oma kylastus</a></li>
     </ul>
+    <hr />
+    <ul>
+      <% visitlogs.forEach(function(log) { %>
+      <li>
+        <%= log.first_name %> <%= log.last_name %>, kylastatud: <%=
+        log.visit_time %>
+      </li>
+      <% }); %>
+    </ul>
+    <hr />
   </body>
 </html>

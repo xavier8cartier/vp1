@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Uudised</title>
+  </head>
+  <body>
+    <img
+      src="banner/vp_banner_2024.png"
+      alt="Veebiprogrammeerimise 2024 aasta kursuse banner"
+    />
+    <ul>
+      <li><a href="/">Avaleht</a></li>
+    </ul>
+
+    <h1>Uudiste list</h1>
+    <% if (newsList.length > 0) { %> <% newsList.forEach(news => { %>
+    <h3><%= news.news_title %></h3>
+    <p>Lisatud: <%= new Date(news.news_date).toLocaleDateString('et-EE') %></p>
+    <p><%= news.news_text %></p>
+    <% }); %> <% } else { %>
+    <p>Pole uudiseid saadaval.</p>
+    <% } %>
+  </body>
+</html>

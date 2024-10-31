@@ -15,14 +15,32 @@
       <a href="https://www.tlu.ee" target="_blank"> Tallinna Ulikoolis</a> ja ei
       sisalda tosiseltvoetavat sisu.
     </p>
+    <p>Semestri algusest on <%= dateDifference %> päeva mööda.</p>
     <hr />
+
+    <h2>Viimane uudis:</h2>
+    <% if (latestNews) { %>
+    <h3><%= latestNews.news_title %></h3>
+    <p>
+      Lisatud: <%= new Date(latestNews.news_date).toLocaleDateString('et-EE') %>
+    </p>
+    <p><%= latestNews.news_text %></p>
+    <% } else { %>
+    <p>Ei ole mingeid uudiseid.</p>
+    <% } %>
+    <hr />
+
     <ul>
       <li><a href="/timenow">Ajainfo</a></li>
       <li><a href="/vanasonad">Vanasonad</a></li>
       <li><a href="/regvisit">Registreeri oma kylastus</a></li>
       <li><a href="/regvisitdb">Registreeri oma kylastus (txt pohine)</a></li>
       <li><a href="/visitlog">Kylastuste logid</a></li>
+      <li><a href="/visitlogdb">Kylastuste logid(DB)</a></li>
       <li><a href="/eestifilm">Eesti Film</a></li>
+      <li><a href="/addnews">Lisa uudis</a></li>
+      <li><a href="/news">Uudised</a></li>
+      <li><a href="/photoupload">Lae üles galeriipilt</a></li>
     </ul>
   </body>
 </html>

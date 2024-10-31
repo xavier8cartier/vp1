@@ -1,3 +1,10 @@
 Kylastuste logi:
 
 CREATE TABLE `if24_ksaveri_petrov`.`visitlog` (`id` INT(11) NOT NULL AUTO_INCREMENT , `first_name` VARCHAR(100) NOT NULL , `last_name` VARCHAR(100) NOT NULL , `visit_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
+
+ALTER TABLE visitlog ADD created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+Uudised:
+
+CREATE TABLE `if24_ksaveri_petrov`.`news` (`id` INT(11) NOT NULL AUTO_INCREMENT , `news_title` VARCHAR(100) NOT NULL , `news_text` TEXT NOT NULL , `news_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `expire_date` DATE NOT NULL , `user_id` INT(11) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
+
