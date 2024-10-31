@@ -8,3 +8,7 @@ Uudised:
 
 CREATE TABLE `if24_ksaveri_petrov`.`news` (`id` INT(11) NOT NULL AUTO_INCREMENT , `news_title` VARCHAR(100) NOT NULL , `news_text` TEXT NOT NULL , `news_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `expire_date` DATE NOT NULL , `user_id` INT(11) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
 
+
+
+
+CREATE TABLE `if24_ksaveri_petrov`.`photos` (`id` INT(11) NOT NULL AUTO_INCREMENT , `file_name` VARCHAR(140) NOT NULL , `orig_name` VARCHAR(140) NOT NULL , `alt_text` VARCHAR(254) NULL , `privacy` INT(1) NOT NULL , `user_id` INT(11) NOT NULL , `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `deleted_at` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 

@@ -14,6 +14,8 @@ app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: true }));
 //seadistame multeri et folotd lahevad kindla katoloogi
 const upload = multer({ dest: "./public/gallery/orig/" });
+//pildimanipulatsiooniks
+const sharp = require("sharp");
 
 //loon andmedbaasi yhenduse
 const conn = mysql.createConnection({
@@ -301,7 +303,42 @@ app.get("/photoupload", (req, res) => {
 app.post("/photoupload", upload.single("photoInput"), (req, res) => {
   console.log(req.body);
   console.log(req.file);
+  //genereerime oma failinime
+  const fileName = "vp_" + Date.now() + ".jpg";
+  //nimetame uleslaetud failid umber
+  fs.rename(req.file.path, req.file.destination + fileName, (err) => {
+    console.log(err);
+  });
+
+  sharp(req.file.destination + fileName)
+    .resize(800, 600)
+    .jpeg({ quality: 90 })
+    .toFile("./public/gallery/normal/" + fileName);
   res.render("photoupload");
+  //teeme 2 erisuurust
+  sharp(req.file.destination + fileName)
+    .resize(100, 100)
+    .jpeg({ quality: 90 })
+    .toFile("./public/gallery/thumb/" + fileName);
+  //salvestame andmebaasi
+  let sqlReq =
+    "INSERT INTO photos (file_name, orig_name, alt_text, privacy, user_id) VALUES (?,?,?,?,?)";
+
+  const userId = 1;
+  conn.query(sqlReq, [
+    fileName,
+    req.file.originalname,
+    req.body.altInput,
+    req.body.privacyInput,
+    userId,
+    (err, result) => {
+      if (err) {
+        throw err;
+      } else {
+        res.render("photoupload");
+      }
+    },
+  ]);
 });
 
 app.listen(5117);
