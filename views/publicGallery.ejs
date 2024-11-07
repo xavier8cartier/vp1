@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Avalik Galleri</title>
+  </head>
+  <body>
+    <h1>Avalik Galleri</h1>
+
+    <ul>
+      <% photos.forEach(photo => { %>
+      <li>
+        <img
+          src="/gallery/thumb/<%= photo.file_name %>"
+          alt="<%= photo.alt_text %>"
+        />
+        <p><%= photo.alt_text %></p>
+      </li>
+      <% }) %>
+    </ul>
+
+    <a href="/">Avaleht</a>
+  </body>
+</html>

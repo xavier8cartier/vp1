@@ -12,3 +12,7 @@ CREATE TABLE `if24_ksaveri_petrov`.`news` (`id` INT(11) NOT NULL AUTO_INCREMENT 
 
 
 CREATE TABLE `if24_ksaveri_petrov`.`photos` (`id` INT(11) NOT NULL AUTO_INCREMENT , `file_name` VARCHAR(140) NOT NULL , `orig_name` VARCHAR(140) NOT NULL , `alt_text` VARCHAR(254) NULL , `privacy` INT(1) NOT NULL , `user_id` INT(11) NOT NULL , `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `deleted_at` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
+
+
+
+CREATE TABLE `if24_ksaveri_petrov`.`users` (`id` INT(11) NOT NULL AUTO_INCREMENT , `first_name` VARCHAR(140) NOT NULL , `last_name` VARCHAR(140) NOT NULL , `birth_date` DATE NOT NULL , `gender` INT(1) NOT NULL , `email` VARCHAR(250) NOT NULL , `password` VARCHAR(60) NOT NULL , `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB; 

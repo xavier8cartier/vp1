@@ -19,16 +19,34 @@
     <hr />
 
     <h2>Viimane uudis:</h2>
-    <% if (latestNews) { %>
-    <h3><%= latestNews.news_title %></h3>
-    <p>
-      Lisatud: <%= new Date(latestNews.news_date).toLocaleDateString('et-EE') %>
-    </p>
-    <p><%= latestNews.news_text %></p>
-    <% } else { %>
-    <p>Ei ole mingeid uudiseid.</p>
-    <% } %>
+    <ul>
+      <h3><%= newsTitle %></h3>
+      <p>Lisatud on: <%= newsDate %></p>
+      <p><%= newsDesc %></p>
+    </ul>
     <hr />
+    <p>Logi sisse</p>
+    <form method="POST">
+      <br />
+      <label for="emailInput">E-mail (kasutajatunnus)</label>
+      <input
+        type="email"
+        id="emailInput"
+        name="emailInput"
+        placeholder="Sinu e-mail ...."
+      />
+      <br />
+      <label for="passwordInput">Salasõna</label>
+      <input type="password" id="passwordInput" name="passwordInput" />
+      <br />
+      <input
+        type="submit"
+        id="loginSubmit"
+        name="loginSubmit"
+        value="Loo kasutajakonto"
+      />
+    </form>
+    <p><%= locals?.notice || "" %></p>
 
     <ul>
       <li><a href="/timenow">Ajainfo</a></li>
@@ -41,6 +59,8 @@
       <li><a href="/addnews">Lisa uudis</a></li>
       <li><a href="/news">Uudised</a></li>
       <li><a href="/photoupload">Lae üles galeriipilt</a></li>
+      <li><a href="/publicGallery">Avalik galerii</a></li>
+      <li><a href="/signup">Loo kasutaja konto</a></li>
     </ul>
   </body>
 </html>
