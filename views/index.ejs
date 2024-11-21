@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="et" action="/signin">
   <head>
     <meta charset="UTF-8" />
-    <title>ksaveri petrov</title>
+    <title>Ksaveri petrov</title>
   </head>
   <body>
     <img
@@ -18,34 +18,6 @@
     <p>Semestri algusest on <%= dateDifference %> päeva mööda.</p>
     <hr />
 
-    <h2>Viimane uudis:</h2>
-    <ul>
-      <h3><%= newsTitle %></h3>
-      <p>Lisatud on: <%= newsDate %></p>
-      <p><%= newsDesc %></p>
-    </ul>
-    <hr />
-    <p>Logi sisse</p>
-    <form method="POST">
-      <br />
-      <label for="emailInput">E-mail (kasutajatunnus)</label>
-      <input
-        type="email"
-        id="emailInput"
-        name="emailInput"
-        placeholder="Sinu e-mail ...."
-      />
-      <br />
-      <label for="passwordInput">Salasõna</label>
-      <input type="password" id="passwordInput" name="passwordInput" />
-      <br />
-      <input
-        type="submit"
-        id="loginSubmit"
-        name="loginSubmit"
-        value="Loo kasutajakonto"
-      />
-    </form>
     <p><%= locals?.notice || "" %></p>
 
     <ul>
@@ -53,14 +25,8 @@
       <li><a href="/vanasonad">Vanasonad</a></li>
       <li><a href="/regvisit">Registreeri oma kylastus</a></li>
       <li><a href="/regvisitdb">Registreeri oma kylastus (txt pohine)</a></li>
-      <li><a href="/visitlog">Kylastuste logid</a></li>
-      <li><a href="/visitlogdb">Kylastuste logid(DB)</a></li>
-      <li><a href="/eestifilm">Eesti Film</a></li>
-      <li><a href="/addnews">Lisa uudis</a></li>
-      <li><a href="/news">Uudised</a></li>
-      <li><a href="/photoupload">Lae üles galeriipilt</a></li>
-      <li><a href="/publicGallery">Avalik galerii</a></li>
       <li><a href="/signup">Loo kasutaja konto</a></li>
+      <li><a href="/signin"> Logi sisse</a></li>
     </ul>
   </body>
 </html>

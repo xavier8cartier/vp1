@@ -7,23 +7,49 @@ const mysql = require("mysql2");
 //paringu lahtiharutamiseks POST paringute puhul
 const bodyparser = require("body-parser");
 //failide uleslaadimine
-const multer = require("multer");
+const multer = require("multer"); //seadistame multeri et folotd lahevad kindla katoloogi
+const session = require("express-session");
+const bcrypt = require("bcrypt");
+const sharp = require("sharp"); //pildimanipulatsiooniks
+const upload = multer({ dest: "./public/gallery/orig/" }); //seadistame multeri et folotd lahevad kindla katoloogi
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: true }));
-//seadistame multeri et folotd lahevad kindla katoloogi
-const upload = multer({ dest: "./public/gallery/orig/" });
-//pildimanipulatsiooniks
-const sharp = require("sharp");
-const bcrypt = require("bcrypt");
+app.use(session({ secret: "YobaBoba", saveUninitialized: true, resave: true }));
 
-//loon andmedbaasi yhenduse
 const conn = mysql.createConnection({
+  //loon andmedbaasi yhenduse
   host: dbInfo.configData.host,
   user: dbInfo.configData.user,
   password: dbInfo.configData.passWord,
   database: dbInfo.configData.dataBase,
+});
+
+const checkLogin = function (req, res, next) {
+  if (req.session != null) {
+    if (req.session.userId) {
+      console.log("Login, user:" + req.session.userId);
+      next();
+    } else {
+      console.log("Login not detected");
+      res.redirect("/signin");
+    }
+  } else {
+    console.log("Session not detected");
+    res.redirect("/signin");
+  }
+};
+
+app.get("/home", checkLogin, (req, res) => {
+  console.log("opa");
+  res.render("home");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  console.log("Valja logitud");
+  res.redirect("/");
 });
 
 app.get("/", (req, res) => {
@@ -166,7 +192,7 @@ app.get("/eestifilm", (req, res) => {
   res.render("filmindex");
 });
 
-app.get("/eestifilm/tegelased", (req, res) => {
+app.get("/eestifilm/tegelased", checkLogin, (req, res) => {
   let sqlReq = "SELECT first_name, last_name, birth_date FROM person";
   conn.query(sqlReq, (err, sqlres) => {
     if (err) {
@@ -271,15 +297,22 @@ app.post("/signin", async (req, res) => {
                       notice,
                     });
                   } else {
-                    notice = "Olete sisse loginud!";
-                    console.log(`Login successful for user ${emailInput}`);
-                    return res.status(200).render("signin", {
-                      dateDifference: dateDifference,
-                      newsTitle: sqlRes[0].news_title,
-                      newsDesc: sqlRes[0].news_text,
-                      newsDate: date,
-                      notice,
-                    });
+                    if (compRes === true) {
+                      notice = "Olete sisse loginud!";
+                      console.log(`Login successful for user ${emailInput}`);
+                      req.session.userId = result[0].id;
+                      return res.redirect("/home");
+                    } else {
+                      notice = "Kasutajatunnus ja/voi parool on vale.";
+                      console.log("Login failed. err: incorrect password");
+                      return res.status(401).render("signin", {
+                        dateDifference: dateDifference,
+                        newsTitle: sqlRes[0].news_title,
+                        newsDesc: sqlRes[0].news_text,
+                        newsDate: date,
+                        notice,
+                      });
+                    }
                   }
                 }
               );
@@ -349,7 +382,7 @@ app.post("/eestifilm", (req, res) => {
   }
 });
 
-app.get("/addnews", (req, res) => {
+app.get("/addnews", checkLogin, (req, res) => {
   const today = new Date();
   let expDate = today.setDate(today.getDate() + 10);
   expDate = new Date(expDate).toISOString();
@@ -390,7 +423,7 @@ app.post("/addnews", (req, res) => {
 });
 //res.render("/addnews");
 
-app.get("/news", (req, res) => {
+app.get("/news", checkLogin, (req, res) => {
   let sqlReq =
     "SELECT news_title, news_text, news_date FROM news WHERE expire_date >= NOW() ORDER BY news_date DESC";
   conn.query(sqlReq, (err, sqlres) => {
@@ -468,7 +501,7 @@ app.post("/photoupload", upload.single("photoInput"), (req, res) => {
 });
 
 // näitab kõike avalikud fotod
-app.get("/publicGallery", (req, res) => {
+app.get("/publicGallery", checkLogin, (req, res) => {
   const sqlReq = "SELECT * FROM photos WHERE privacy = 3 ORDER BY id DESC";
   conn.query(sqlReq, (err, sqlres) => {
     if (err) {

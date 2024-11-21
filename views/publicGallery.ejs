@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html lang="et">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Avalik Galleri</title>
-  </head>
-  <body>
-    <h1>Avalik Galleri</h1>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/style/gallery.css">
+  <link rel="stylesheet" href="/style/modal.css">
+  <script src="/script/gallery.js" defer></script>
+</head>
+<body>
+  <img src="/banner/vp_banner_2024.png"alt="Veebiprogrameerimise 2024 aasta kursuse bänner">
+  <h1>Ksaveri Petrov</h1>
 
-    <ul>
-      <% photos.forEach(photo => { %>
-      <li>
-        <img
-          src="/gallery/thumb/<%= photo.file_name %>"
-          alt="<%= photo.alt_text %>"
-        />
-        <p><%= photo.alt_text %></p>
-      </li>
-      <% }) %>
-    </ul>
+  <p>See leht loodus õppetöö raames <a href= "https://www.tlu.ee/" target="_blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
 
-    <a href="/">Avaleht</a>
-  </body>
+  <p>Huvitavad uudised ainult siin</p>
+  <hr>
+  <ul>
+  <li><a href="/home">Avaleht</a></li>
+  <li><a href="/upload">Laadi uus photo</a></li>
+  </ul>
+  <hr>
+  <dialog id="modal" class="modalarea">
+    <span id="modalClose" class="modalClose">&times;</span>
+    <div class="modalhorizontal">
+      <div class="modalvertical">
+        <p id="modalCaption"></p>
+        <img id="modalImage" src="/pics/empty.png" alt="galeriipilt">
+      </div>
+    </div>
+  </dialog>
+  <h2>Fotogalerii</h2>
+  <div class="gallery" id="gallery">
+      <% photos.forEach(function(item){ %>
+        <img class="thumbs" data-filename="<%= item.file_name %>" src="/gallery/thumb/<%= item.file_name %>" alt=<%= item.alt_text %>/>
+      <% }); %>
+  </div>
+</body>
 </html>
