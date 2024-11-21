@@ -13,10 +13,16 @@ const bcrypt = require("bcrypt");
 const sharp = require("sharp"); //pildimanipulatsiooniks
 const upload = multer({ dest: "./public/gallery/orig/" }); //seadistame multeri et folotd lahevad kindla katoloogi
 
+const newsRoutes = require('./routes/newsRoutes');
+
+const async = require("async");
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(session({ secret: "YobaBoba", saveUninitialized: true, resave: true }));
+
+app.use('/news', newsRoutes)
 
 const conn = mysql.createConnection({
   //loon andmedbaasi yhenduse
@@ -211,6 +217,49 @@ app.get("/eestifilm/tegelased", checkLogin, (req, res) => {
     }
   });
 });
+
+app.get("/eestifilm/lisaSeos", (req, res) => {
+  const filmQueries = [
+    function(callback) {
+        conn.execute('SELECT * FROM person', [], (err, result) => {
+            if (err || !result) {
+                return callback(err)
+            } else {
+                return callback(null, result)
+            }
+        })
+    },
+    function(callback) {
+        conn.execute('SELECT * FROM movie', [], (err, result) => {
+            if (err || !result) {
+                return callback(err)
+            } else {
+                return callback(null, result)
+            }
+        })
+    },
+    function(callback) {
+        conn.execute('SELECT * FROM position', [], (err, result) => {
+            if (err || !result) {
+                return callback(err)
+            } else {
+                return callback(null, result)
+            }
+        })
+    }
+]
+async.parallel(filmQueries, (err, results) => {
+    if (err || !results) {
+        throw err;
+    } else {
+        console.log(results[0])
+        res.render("addrelations", {personList: results[0], movieList: results[1], positionList: results[2]});
+    }
+})
+});
+
+
+
 //res.render("tegelased");
 //---------------------------------------------------------------------------------------------
 app.get("/visitlogdb", (req, res) => {
@@ -382,7 +431,7 @@ app.post("/eestifilm", (req, res) => {
   }
 });
 
-app.get("/addnews", checkLogin, (req, res) => {
+/*app.get("/addnews", checkLogin, (req, res) => {
   const today = new Date();
   let expDate = today.setDate(today.getDate() + 10);
   expDate = new Date(expDate).toISOString();
@@ -421,9 +470,9 @@ app.post("/addnews", (req, res) => {
     }
   });
 });
+*/
 //res.render("/addnews");
-
-app.get("/news", checkLogin, (req, res) => {
+/*app.get("/news", checkLogin, (req, res) => {
   let sqlReq =
     "SELECT news_title, news_text, news_date FROM news WHERE expire_date >= NOW() ORDER BY news_date DESC";
   conn.query(sqlReq, (err, sqlres) => {
@@ -435,6 +484,7 @@ app.get("/news", checkLogin, (req, res) => {
     }
   });
 });
+*/
 
 app.get("/photoupload", (req, res) => {
   res.render("photoupload");
